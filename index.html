@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f4efe6" />
+    <title>عَبْر | رحلة وطن</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div class="site-noise" aria-hidden="true"></div>
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="عبر، إلى البداية">
+        <span class="brand-mark" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="brand-word">عَبْر</span>
+      </a>
+      <div class="topbar-center">رحلة وطن <i></i> ٠٣ وقفات</div>
+      <button class="about-button" type="button" data-about>
+        <span>عن الرحلة</span>
+        <span class="about-dot"></span>
+      </button>
+    </header>
+
+    <main id="top">
+      <section class="hero-screen" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <div class="eyebrow reveal reveal-1"><span class="eyebrow-line"></span> كيف كانت… وكيف صرنا</div>
+          <h1 id="hero-title" class="hero-title reveal reveal-2">عَبْر</h1>
+          <p class="hero-subtitle reveal reveal-3">رحلة تفاعلية<br />عبر محطات من قصة المملكة</p>
+          <p class="hero-description reveal reveal-4">ثلاث وقفات قصيرة. نقترب منها بهدوء،<br class="desktop-only" /> ونترك للزمن أن يرسم مساره أمامنا.</p>
+          <button class="start-button reveal reveal-5" type="button" data-start>
+            <span>ابدأ الرحلة</span>
+            <span class="button-arrow" aria-hidden="true">←</span>
+          </button>
+        </div>
+
+        <div class="hero-art" aria-label="رسم تجريدي لرحلة عبر الزمن">
+          <div class="art-caption caption-top"><span>من هنا</span><b>١</b></div>
+          <div class="art-caption caption-bottom"><b>٣</b><span>إلى هناك</span></div>
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="sun"></div>
+          <div class="mountain mountain-back"></div>
+          <div class="mountain mountain-front"></div>
+          <div class="art-road"></div>
+          <div class="art-pin pin-one"><span></span></div>
+          <div class="art-pin pin-two"><span></span></div>
+          <div class="art-star star-one">✦</div>
+          <div class="art-star star-two">✦</div>
+          <div class="art-label label-now"><small>الآن</small><span>٢٠٣٠</span></div>
+          <div class="art-label label-then"><small>البداية</small><span>١٧٢٧</span></div>
+          <div class="vertical-axis"></div>
+        </div>
+
+        <div class="hero-meta reveal reveal-5">
+          <span class="scroll-label">اسحب لتبدأ</span>
+          <span class="scroll-line"><i></i></span>
+          <span class="scroll-index">٠١ <b>/</b> ٠٣</span>
+        </div>
+      </section>
+
+      <section class="journey-screen" id="journey" aria-labelledby="journey-title" hidden>
+        <div class="journey-header">
+          <div class="eyebrow"><span class="eyebrow-line"></span> محطات من الذاكرة</div>
+          <div class="journey-counter"><span id="current-number">٠١</span><i></i><span>٠٣</span></div>
+        </div>
+
+        <div class="journey-grid">
+          <div class="journey-visual" aria-hidden="true">
+            <div class="visual-ring ring-large"></div>
+            <div class="visual-ring ring-small"></div>
+            <div class="visual-sun"></div>
+            <div class="visual-dunes dune-back"></div>
+            <div class="visual-dunes dune-front"></div>
+            <div class="visual-arch">
+              <span class="arch-inner"></span>
+              <span class="arch-glow"></span>
+            </div>
+            <div class="visual-year" id="visual-year">١٧٢٧</div>
+            <div class="visual-side-note"><span>محطة</span><b id="visual-station">٠١</b></div>
+          </div>
+
+          <div class="journey-copy">
+            <div class="station-kicker"><span id="station-index">٠١</span><span class="kicker-rule"></span><span id="station-type">البدايات</span></div>
+            <h2 id="journey-title">حين اجتمع<br /><em>الحلم</em></h2>
+            <p class="station-lead" id="station-lead">في الدرعية، بدأت حكاية دولةٍ تنظر إلى أبعد من حدود المكان. خطوة أولى، تركت في الرمل أثرًا لا يمحوه الزمن.</p>
+            <div class="station-note">
+              <span class="note-mark">“</span>
+              <p id="station-note-text">كل رحلة عظيمة تبدأ من مكان صغير.</p>
+            </div>
+            <div class="journey-controls">
+              <button class="next-button" type="button" data-next>
+                <span id="next-label">المحطة التالية</span>
+                <span class="button-arrow">←</span>
+              </button>
+              <button class="back-button" type="button" data-back>العودة للبداية</button>
+            </div>
+          </div>
+        </div>
+
+        <nav class="station-nav" aria-label="محطات الرحلة">
+          <button class="station-tab is-active" data-station="0" type="button"><span>٠١</span><i></i><b>البدايات</b></button>
+          <button class="station-tab" data-station="1" type="button"><span>٠٢</span><i></i><b>التوحيد</b></button>
+          <button class="station-tab" data-station="2" type="button"><span>٠٣</span><i></i><b>الامتداد</b></button>
+        </nav>
+      </section>
+    </main>
+
+    <div class="about-panel" data-about-panel aria-hidden="true">
+      <button class="close-about" type="button" data-close-about aria-label="إغلاق">×</button>
+      <div class="about-panel-inner">
+        <div class="eyebrow"><span class="eyebrow-line"></span> عن المشروع</div>
+        <h2>نقترب من<br /><em>الحكاية</em></h2>
+        <p>عَبْر تجربة قصيرة تتوقف عند ثلاث لحظات، وتترك بين كل لحظة وأخرى مساحة للتأمل. لأن الوطن ليس تاريخًا نقرأه فقط، بل رحلة نعيش امتدادها.</p>
+        <span class="about-signature">رحلة وطن — ٢٠٢٤</span>
+      </div>
+    </div>
+
+    <footer class="site-footer">
+      <span>عَبْر — رحلة وطن</span>
+      <span class="footer-dot"></span>
+      <span>نموذج تجريبي — ثلاث محطات مختارة</span>
+    </footer>
+    <script src="./script.js"></script>
+  </body>
+</html>
