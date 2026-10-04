@@ -31,15 +31,30 @@ The platform is not a technology collection. Every subsystem must contribute to 
 
 - API: Python + FastAPI
 - Frontend: Next.js when UI work begins
+- Model providers: Hugging Face, Ollama, llama.cpp, vLLM, and other adapters
+- Model Hub/Inference: Hugging Face provider boundary with metadata/license review
 - Workflow: n8n only where its license/use case is acceptable; otherwise Temporal or native orchestration
 - Media: FFmpeg + ImageMagick
 - Image/video generation: ComfyUI and model-specific workers
-- LLM runtime: Ollama / llama.cpp / vLLM as workload requires
 - Data: PostgreSQL + pgvector or Qdrant
 - Queue/cache: Redis initially; dedicated broker only when justified
 - Containers: Docker
 - Observability: OpenTelemetry-compatible metrics/logging/tracing
 - CI/CD: GitHub Actions
+
+## Hugging Face integration
+
+Hugging Face is integrated as a **provider boundary**, not as a vendor dependency throughout the core.
+
+Current capabilities:
+- Inference Providers with automatic routing
+- Text generation/chat completion
+- Image generation
+- Hub model metadata lookup
+- Environment-based authentication
+- Explicit model/license/commercial review before production admission
+
+See docs/technology/huggingface.md.
 
 ## Commercial rule
 
@@ -47,14 +62,24 @@ Open-source dependencies, models, nodes, datasets, and skills are admitted throu
 
 ## Current phase
 
-**Phase 0 — Foundation and commercial architecture**
+**Phase 0 — Foundation → Runtime**
 
-The first implementation target is a clean platform skeleton with explicit boundaries, tests, configuration, security controls, and a commercialization registry.
+The architecture and commercial foundation are established. The implementation is now moving into the Core Job Runtime and provider layer.
+
+Current execution order:
+
+1. Provider contracts
+2. Hugging Face provider integration
+3. Core Job Runtime
+4. Model Router
+5. VoiceStudio / ComfyUI / FFmpeg workers
+6. Cost and evaluation engines
+7. Product UI and commercial workflows
 
 See:
-- `docs/architecture/system.md`
-- `docs/product/commercialization.md`
-- `.kiro/steering/product.md`
-- `.kiro/steering/engineering.md`
-- `.kiro/steering/commercial.md`
-- `.kiro/skills/`
+- docs/architecture/system.md
+- docs/product/commercialization.md
+- docs/technology/huggingface.md
+- .kiro/steering/product.md
+- .kiro/steering/engineering.md
+- .kiro/skills/
