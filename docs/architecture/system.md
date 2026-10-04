@@ -11,7 +11,11 @@ API Gateway / Web App
     v
 Project + Job Orchestrator
     |
-    +--> Model Router ------> LLM / Image / Video / Audio Providers
+    +--> Model Router ------> Provider Adapters
+    |                            |
+    |                            +--> Hugging Face
+    |                            +--> Ollama / vLLM / llama.cpp
+    |                            +--> OpenAI / other APIs
     |
     +--> Workflow Engine ---> Agents / Skills / MCP Tools
     |
@@ -40,6 +44,24 @@ Generation providers are adapters. Product code calls stable interfaces such as:
 - VideoGenerationProvider
 - AudioGenerationProvider
 - EmbeddingProvider
+
+Hugging Face is the first external model-provider adapter implemented under this boundary. The adapter exposes normalized requests/results and isolates vendor SDK details from the core.
+
+### Model governance
+A model is not admitted to a production route solely because it is discoverable or popular.
+
+The model registry must record:
+- provider
+- model ID
+- revision when required
+- task
+- license
+- gated-access requirements
+- provider route
+- deployment mode
+- cost
+- quality/evaluation signals
+- fallback
 
 ### Job model
 Every long-running operation becomes a job with:
