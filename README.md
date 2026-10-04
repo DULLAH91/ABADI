@@ -41,6 +41,12 @@ The platform is not a technology collection. Every subsystem must contribute to 
 - Observability: OpenTelemetry-compatible metrics/logging/tracing
 - CI/CD: GitHub Actions
 
+## Model provider integrations
+
+The first external model provider adapter is Hugging Face. It is isolated behind `HuggingFaceProvider` and the generic provider contract, with support for chat, text-to-image, text-to-speech, and automatic speech recognition. Provider routing defaults to Hugging Face `auto` selection; model licensing, cost, and commercial-use status remain controlled by the AI Media Hub Model Registry.
+
+See `docs/technology/huggingface.md`.
+
 ## Commercial rule
 
 Open-source dependencies, models, nodes, datasets, and skills are admitted through a license/security/maintenance/commercial-use review. No dependency becomes part of the commercial core merely because it is popular.
