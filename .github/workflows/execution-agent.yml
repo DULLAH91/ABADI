@@ -7,8 +7,11 @@ on:
     paths:
       - "src/ai_media_hub/execution/**"
       - "src/ai_media_hub/runtime/execution.py"
+      - "src/ai_media_hub/control.py"
+      - "src/ai_media_hub/mcp_server.py"
       - "tests/test_agent.py"
       - "tests/test_execution_contract.py"
+      - "tests/test_atomic_chat_control.py"
       - "pyproject.toml"
       - ".github/workflows/execution-agent.yml"
 
