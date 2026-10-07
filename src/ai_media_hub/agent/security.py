@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hmac
 import os
+import re
 from dataclasses import dataclass
 
 DEFAULT_ALLOWED_EXECUTABLES = frozenset({
@@ -10,6 +11,8 @@ DEFAULT_ALLOWED_EXECUTABLES = frozenset({
     "nvidia-smi", "nvidia-smi.exe",
     "ffmpeg", "ffmpeg.exe", "magick", "magick.exe",
 })
+
+SHELL_META = re.compile(r"(?:&&|\|\||[&|<>;\x60]|\$\(|\r|\n)")
 
 
 @dataclass(frozen=True)
@@ -30,6 +33,8 @@ class AgentSecurityPolicy:
             raise RuntimeError("AI_MEDIA_HUB_AGENT_MODE must be restricted or trusted.")
         raw = os.getenv("AI_MEDIA_HUB_ALLOWED_ROOTS", "").strip()
         roots = tuple(os.path.abspath(x.strip()) for x in raw.split(";") if x.strip())
+        if mode == "restricted" and not roots:
+            roots = (os.getcwd(),)
         return cls(token=token, mode=mode, allowed_working_roots=roots)
 
     def authenticate(self, supplied_token: str) -> bool:
@@ -50,6 +55,8 @@ class AgentSecurityPolicy:
                 raise PermissionError("Working directory is outside the allowed roots.")
         if self.mode == "trusted":
             return
+        if SHELL_META.search(command):
+            raise PermissionError("Shell composition/operators are disabled in restricted mode.")
         executable = os.path.basename(command.strip().split(maxsplit=1)[0])
         if executable.lower() not in {x.lower() for x in self.allowed_executables}:
             raise PermissionError(
