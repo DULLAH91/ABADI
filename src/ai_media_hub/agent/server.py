@@ -6,7 +6,7 @@ import platform
 import shutil
 import time
 from typing import Any
-from uuid import UUID
+from uuid import UUID, uuid4
 
 from fastapi import Depends, FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
@@ -71,7 +71,7 @@ class AgentServer:
             working_directory=payload.working_directory,
             environment=payload.environment,
             timeout_seconds=payload.timeout_seconds,
-            request_id=payload.request_id or ExecutionRequest.__dataclass_fields__["request_id"].default_factory(),
+            request_id=payload.request_id or uuid4(),
         )
         started = time.monotonic()
         self.audit.record(
