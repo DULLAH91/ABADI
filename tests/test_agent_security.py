@@ -30,3 +30,8 @@ def test_trusted_mode_requires_explicit_operator_choice():
 def test_timeout_is_bounded():
     with pytest.raises(PermissionError):
         make_policy().validate("python --version", None, 1801)
+
+
+def test_restricted_mode_denies_python_code_execution():
+    with pytest.raises(PermissionError):
+        make_policy().validate("python -c \"print(1)\"", None, 30)
