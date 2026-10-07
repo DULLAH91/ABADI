@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import os
+import secrets
 from typing import Any
+from uuid import UUID
 
 from fastapi import Depends, FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
@@ -17,7 +19,7 @@ class ExecuteRequest(BaseModel):
     working_directory: str | None = None
     environment: dict[str, str] = Field(default_factory=dict)
     timeout_seconds: int = Field(default=300, ge=1, le=1800)
-    request_id: str
+    request_id: UUID
 
 
 def create_agent_app() -> FastAPI:
@@ -50,6 +52,7 @@ def create_agent_app() -> FastAPI:
         node,
         token=token,
         allowed_command_patterns=patterns,
+        audit_log=os.getenv("AI_MEDIA_HUB_AUDIT_LOG"),
     )
 
     app = FastAPI(
@@ -62,7 +65,8 @@ def create_agent_app() -> FastAPI:
             raise HTTPException(
                 status_code=503, detail="Node token is not configured."
             )
-        if authorization != f"Bearer {token}":
+        expected = f"Bearer {token}"
+        if not authorization or not secrets.compare_digest(authorization, expected):
             raise HTTPException(status_code=401, detail="Unauthorized.")
 
     @app.get("/v1/node", dependencies=[Depends(require_token)])
@@ -73,6 +77,7 @@ def create_agent_app() -> FastAPI:
     async def execute(payload: ExecuteRequest) -> dict[str, Any]:
         if payload.node_id != node.id:
             raise HTTPException(status_code=409, detail="Node identity mismatch.")
+
         request = ExecutionRequest(
             node_id=payload.node_id,
             operation=payload.operation,
@@ -80,6 +85,7 @@ def create_agent_app() -> FastAPI:
             working_directory=payload.working_directory,
             environment=payload.environment,
             timeout_seconds=payload.timeout_seconds,
+            request_id=payload.request_id,
         )
         try:
             result = await agent.execute(request)
