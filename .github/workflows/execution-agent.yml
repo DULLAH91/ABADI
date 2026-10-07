@@ -1,0 +1,23 @@
+name: execution-plane
+
+on:
+  push:
+    branches: ["master", "feat/**"]
+  pull_request:
+    paths:
+      - "src/ai_media_hub/execution/**"
+      - "tests/test_agent.py"
+      - "tests/test_execution_contract.py"
+      - "pyproject.toml"
+      - ".github/workflows/execution-agent.yml"
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install --upgrade pip pytest
+      - run: python -m pytest -q
