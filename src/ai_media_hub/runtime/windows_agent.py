@@ -5,6 +5,7 @@ import json
 import os
 import re
 import time
+from pathlib import Path
 from typing import Any
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
@@ -17,7 +18,7 @@ class WindowsExecutionAgentError(RuntimeError):
 
 
 class WindowsExecutionAgent:
-    """Authenticated Windows execution service with an explicit command allowlist."""
+    """Authenticated Windows execution service with explicit policy and audit."""
 
     def __init__(
         self,
@@ -25,6 +26,7 @@ class WindowsExecutionAgent:
         *,
         token: str,
         allowed_command_patterns: tuple[str, ...],
+        audit_log: str | None = None,
     ) -> None:
         if not token:
             raise ValueError("AI_MEDIA_HUB_NODE_TOKEN must be configured.")
@@ -34,6 +36,7 @@ class WindowsExecutionAgent:
             re.compile(pattern, re.IGNORECASE)
             for pattern in allowed_command_patterns
         )
+        self.audit_log = Path(audit_log) if audit_log else None
 
     def _command_allowed(self, command: str) -> bool:
         return any(
@@ -41,16 +44,38 @@ class WindowsExecutionAgent:
             for pattern in self.allowed_command_patterns
         )
 
+    def _audit(self, event: str, request: ExecutionRequest, **extra: Any) -> None:
+        if not self.audit_log:
+            return
+        self.audit_log.parent.mkdir(parents=True, exist_ok=True)
+        record = {
+            "event": event,
+            "request_id": str(request.request_id),
+            "node_id": request.node_id,
+            "operation": request.operation,
+            "command": request.command,
+            "timestamp": time.time(),
+            **extra,
+        }
+        with self.audit_log.open("a", encoding="utf-8") as handle:
+            handle.write(json.dumps(record, ensure_ascii=False) + "\n")
+
     async def execute(self, request: ExecutionRequest) -> ExecutionResult:
+        if request.node_id != self.node.id:
+            raise WindowsExecutionAgentError("Node identity mismatch.")
+
         if request.operation != "shell":
+            self._audit("rejected", request, reason="unsupported_operation")
             raise WindowsExecutionAgentError(
                 f"Unsupported operation: {request.operation}"
             )
 
         command = (request.command or "").strip()
         if not self._command_allowed(command):
+            self._audit("rejected", request, reason="command_policy")
             raise WindowsExecutionAgentError("Command rejected by node policy.")
 
+        self._audit("accepted", request)
         started = time.perf_counter()
         completed = await asyncio.create_subprocess_shell(
             command,
@@ -66,15 +91,23 @@ class WindowsExecutionAgent:
         except asyncio.TimeoutError as exc:
             completed.kill()
             await completed.wait()
+            self._audit("timeout", request)
             raise WindowsExecutionAgentError("Command timed out.") from exc
 
+        duration_ms = (time.perf_counter() - started) * 1000
+        self._audit(
+            "completed",
+            request,
+            exit_code=completed.returncode,
+            duration_ms=duration_ms,
+        )
         return ExecutionResult(
             request_id=request.request_id,
             node_id=self.node.id,
             exit_code=completed.returncode,
             stdout=stdout.decode(errors="replace"),
             stderr=stderr.decode(errors="replace"),
-            duration_ms=(time.perf_counter() - started) * 1000,
+            duration_ms=duration_ms,
         )
 
     def health(self) -> dict[str, Any]:
