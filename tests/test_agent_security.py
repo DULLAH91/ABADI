@@ -19,6 +19,11 @@ def test_restricted_mode_denies_unknown_executable():
     with pytest.raises(PermissionError):
         make_policy().validate("powershell Get-Process", None, 30)
 
+def test_restricted_mode_blocks_shell_composition():
+    with pytest.raises(PermissionError):
+        make_policy().validate("git status & powershell Get-Process", None, 30)
+
+
 def test_trusted_mode_requires_explicit_operator_choice():
     make_policy("trusted").validate("powershell Get-Process", None, 30)
 
