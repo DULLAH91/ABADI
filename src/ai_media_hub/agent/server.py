@@ -6,6 +6,7 @@ import platform
 import shutil
 import time
 from typing import Any
+from uuid import UUID
 
 from fastapi import Depends, FastAPI, Header, HTTPException
 from pydantic import BaseModel, Field
@@ -21,6 +22,7 @@ class ExecutePayload(BaseModel):
     working_directory: str | None = None
     environment: dict[str, str] = Field(default_factory=dict)
     timeout_seconds: int = Field(default=300, ge=1, le=1800)
+    request_id: UUID | None = None
 
 
 class AgentServer:
@@ -69,6 +71,7 @@ class AgentServer:
             working_directory=payload.working_directory,
             environment=payload.environment,
             timeout_seconds=payload.timeout_seconds,
+            request_id=payload.request_id or ExecutionRequest.__dataclass_fields__["request_id"].default_factory(),
         )
         started = time.monotonic()
         self.audit.record(
