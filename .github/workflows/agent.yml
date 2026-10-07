@@ -1,0 +1,17 @@
+name: Execution Agent CI
+on:
+  pull_request:
+    paths: ["src/ai_media_hub/agent/**","src/ai_media_hub/runtime/execution.py","tests/test_agent_*.py","pyproject.toml",".github/workflows/agent.yml"]
+  push:
+    branches: [master]
+    paths: ["src/ai_media_hub/agent/**","src/ai_media_hub/runtime/execution.py","tests/test_agent_*.py","pyproject.toml"]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.11"}
+      - run: python -m pip install --upgrade pip
+      - run: pip install -e ".[dev]"
+      - run: pytest -q
