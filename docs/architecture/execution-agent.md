@@ -10,7 +10,7 @@ Living Core -> Runtime -> ExecutionNodeAdapter -> authenticated transport -> Win
 - Loopback binding is the default deployment posture.
 - Every control-plane request requires a bearer token.
 - Bearer comparison uses constant-time comparison.
-- Commands are restricted by explicit full-match regular expressions.
+- Commands are restricted by explicit full-match command patterns; executable-name allowlists are not sufficient for interpreter-based tools.
 - Every command has a bounded timeout.
 - Node identity is checked on every execution request.
 - The control-plane request ID is preserved end-to-end.
@@ -32,7 +32,7 @@ Required:
 Optional:
 - AI_MEDIA_HUB_NODE_ID — defaults to windows-rtx6000-01
 - AI_MEDIA_HUB_NODE_NAME — defaults to Windows RTX 6000
-- AI_MEDIA_HUB_ALLOWED_COMMANDS — pipe-separated full-match regex allowlist
+- AI_MEDIA_HUB_ALLOWED_COMMAND_PATTERNS — semicolon-separated full-match regex allowlist
 - AI_MEDIA_HUB_AUDIT_LOG — optional JSONL audit path
 
 Default commands are deliberately narrow:
